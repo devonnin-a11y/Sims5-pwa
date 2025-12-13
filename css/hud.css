@@ -1,0 +1,15 @@
+#hud {
+  display: flex;
+  gap: 15px;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 15px;
+  border-radius: 12px;
+}
+
+.need span {
+  margin-left: 5px;
+}
+
+#emotion {
+  font-size: 24px;
+}
