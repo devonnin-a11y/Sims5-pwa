@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  background: #1e2a2f;
+  color: white;
+  font-family: system-ui, sans-serif;
+}
+
+#game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  justify-content: center;
+}
+
+#sim-avatar {
+  font-size: 80px;
+  margin-bottom: 20px;
+}
