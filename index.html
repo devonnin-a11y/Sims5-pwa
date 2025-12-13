@@ -7,8 +7,33 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/core.css" />
   <link rel="stylesheet" href="css/hud.css" />
+  <link rel="stylesheet" href="css/cas.css" />
+
 </head>
 <body>
+<div id="cas">
+  <h2>Create-A-Sim</h2>
+
+  <input id="cas-name" placeholder="Sim Name" />
+
+  <select id="cas-age">
+    <option>Child</option>
+    <option>Teen</option>
+    <option selected>Young Adult</option>
+    <option>Adult</option>
+    <option>Elder</option>
+  </select>
+
+  <select id="cas-trait">
+    <option>Creative</option>
+    <option>Active</option>
+    <option>Family-Oriented</option>
+    <option>Lazy</option>
+    <option>Genius</option>
+  </select>
+
+  <button onclick="submitCAS()">Start Life</button>
+</div>
 
 <div id="game">
   <div id="sim-avatar">🧍</div>
@@ -22,6 +47,11 @@
 </div>
 
 <script type="module" src="js/app.js"></script>
+  <script type="module">
+  import { submitCAS } from "./js/cas.js";
+  window.submitCAS = submitCAS;
+</script>
+
 </body>
 </html>
 <script>
