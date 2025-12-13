@@ -12,4 +12,7 @@ export function renderUI() {
 
   document.querySelector("#emotion").textContent =
     state.sim.emotion;
+
+  document.getElementById("time").textContent =
+    `Day ${state.time.day} – ${state.time.hour}:00`;
 }
