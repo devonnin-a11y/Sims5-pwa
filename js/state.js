@@ -48,3 +48,8 @@ export function getActiveSim() {
   const id = state.household.activeSimId;
   return state.household.sims[id];
 }
+
+appearance: {
+  body: { height: 0.5, weight: 0.5 },
+  face: { jaw: 0.5, eyes: 0.5 }
+}
