@@ -16,27 +16,19 @@
   --shadow-soft: 0 8px 20px rgba(0,0,0,0.08);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* ✅ critical */
+}
 
 body {
-  margin: 0;
   background: var(--paper);
   color: var(--ink-strong);
   font-family: ui-rounded, system-ui, -apple-system;
-  line-height: 1.4;
-}
-
-#game {
-  min-height: 100vh;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-#sim-avatar {
-  font-size: clamp(64px, 9vw, 120px);
-  line-height: 1;
-  margin-top: 6px;
 }
