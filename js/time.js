@@ -1,37 +1,42 @@
 import { state } from "./state.js";
-import { tickNeeds } from "./needs.js";
-import { runAutonomy } from "./autonomy.js";
 import { tickQueue } from "./queue.js";
-import { tickMemories } from "./memory.js";
-import { tickMoodlets } from "./moodlets.js";
-import { tickAging } from "./aging.js";
-import { tickSkills } from "./skills.js";
-import { tickCareer } from "./careers.js";
-import { saveGame } from "./storage.js";
 
-export function startClock() {
-  setInterval(() => {
-    if (state.time.speed === 0) return;
-
-    state.time.hour += state.time.speed;
-    if (state.time.hour >= 24) {
-      state.time.hour = 0;
-      state.time.day++;
-    }
-
-    tickQueue();      // 🎮 PLAYER & AI ACTIONS
-    tickNeeds();
-    runAutonomy();
-    tickMemories();
-    tickMoodlets();
-    tickSkills();
-    tickCareer();
-    tickAging();
-
-    saveGame();
-  }, 2500);
-}
+let timer = null;
 
 export function setSpeed(speed) {
-  state.time.speed = speed;
+  state.time.speed = speed; // 0..3
+  restartClock();
+}
+
+function restartClock() {
+  if (timer) clearInterval(timer);
+  if (state.time.speed === 0) return;
+
+  // Speed mapping: higher = more frequent ticks
+  const ms = state.time.speed === 1 ? 900 :
+             state.time.speed === 2 ? 450 :
+             220;
+
+  timer = setInterval(() => {
+    // Queue ticks every interval
+    tickQueue();
+
+    // Move clock forward slowly (optional)
+    // Every ~12 ticks at speed 1 = +1 hour
+    if (state.time.speed === 1 && Math.random() < 0.08) advanceHour();
+    if (state.time.speed === 2 && Math.random() < 0.14) advanceHour();
+    if (state.time.speed === 3 && Math.random() < 0.22) advanceHour();
+  }, ms);
+}
+
+function advanceHour() {
+  state.time.hour += 1;
+  if (state.time.hour >= 24) {
+    state.time.hour = 0;
+    state.time.day += 1;
+  }
+}
+
+export function startClock() {
+  restartClock();
 }
