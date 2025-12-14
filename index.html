@@ -11,11 +11,30 @@
 </head>
 
 <body>
-  <div id="cas">
-    <h2>Create-A-Sim</h2>
 
+  <!-- Household Switcher -->
+  <div id="household" class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Household</div>
+      <button class="btn" onclick="closeHousehold()">✖</button>
+    </div>
+    <div id="household-list" class="list"></div>
+    <div class="panel-actions">
+      <button class="btn primary" onclick="openCAS('create')">➕ Add Sim</button>
+    </div>
+  </div>
+
+  <!-- Create / Edit Sim -->
+  <div id="cas" class="panel">
+    <div class="panel-head">
+      <div class="panel-title" id="cas-title">Create-A-Sim</div>
+      <button class="btn" onclick="closeCAS()">✖</button>
+    </div>
+
+    <label class="label">Name</label>
     <input id="cas-name" placeholder="Sim Name" />
 
+    <label class="label">Age</label>
     <select id="cas-age">
       <option>Child</option>
       <option>Teen</option>
@@ -24,54 +43,103 @@
       <option>Elder</option>
     </select>
 
+    <label class="label">Primary Trait</label>
     <select id="cas-trait">
       <option>Creative</option>
       <option>Active</option>
       <option>Family-Oriented</option>
       <option>Lazy</option>
       <option>Genius</option>
+      <option>Romantic</option>
+      <option>Goofball</option>
     </select>
 
-    <button onclick="submitCAS()">Start Life</button>
-    <button id="cas-start-btn" onclick="submitCAS()">Start Life</button>
-
+    <div class="row">
+      <button id="cas-save-btn" class="btn primary" onclick="submitCAS()">Save</button>
+      <button class="btn danger" onclick="newSim()">Reset Save</button>
+    </div>
   </div>
 
   <div id="game">
     <div id="sim-avatar">🧍</div>
 
     <div id="hud">
-      <div id="time"></div>
+      <div class="hud-top">
+        <div class="sim-meta">
+          <div id="sim-name" class="sim-name">Sim</div>
+          <div id="sim-trait" class="sim-trait">Trait</div>
+        </div>
 
-      <button onclick="setSpeed(0)">⏸️</button>
-      <button onclick="setSpeed(1)">▶️</button>
-      <button onclick="setSpeed(2)">⏩</button>
-      <button onclick="setSpeed(3)">⏭️</button>
+        <div class="hud-actions">
+          <button class="btn" onclick="openHousehold()">👥</button>
+          <button class="btn" onclick="openCAS('edit')">✏️</button>
+          <button class="btn danger" onclick="newSim()">♻️</button>
+        </div>
+      </div>
 
-      <div class="need" id="hunger">🍽️ <span></span></div>
-      <div class="need" id="energy">⚡ <span></span></div>
-      <div class="need" id="social">💬 <span></span></div>
-      <div id="emotion">🙂</div>
+      <div class="hud-mid">
+        <div id="time"></div>
+        <button class="btn" onclick="setSpeed(0)">⏸️</button>
+        <button class="btn" onclick="setSpeed(1)">▶️</button>
+        <button class="btn" onclick="setSpeed(2)">⏩</button>
+        <button class="btn" onclick="setSpeed(3)">⏭️</button>
+      </div>
+
+      <div class="hud-bot">
+        <div class="need" id="hunger">🍽️ <span></span></div>
+        <div class="need" id="energy">⚡ <span></span></div>
+        <div class="need" id="social">💬 <span></span></div>
+        <div id="emotion">🙂</div>
+      </div>
+
+      <div class="hud-panels">
+        <div class="card">
+          <div class="card-title">Skills</div>
+          <div id="skills"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Career</div>
+          <div id="career"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Memories</div>
+          <div id="memories"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Family</div>
+          <div id="family"></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Main app -->
   <script type="module" src="js/app.js"></script>
 
-  <!-- Expose module functions to HTML onclick handlers -->
   <script type="module">
-    import { submitCAS } from "./js/cas.js";
+    import { submitCAS, openCAS, closeCAS, newSim } from "./js/cas.js";
     import { setSpeed } from "./js/time.js";
+    import { openHousehold, closeHousehold, switchActiveSim } from "./js/ui.js";
 
     window.submitCAS = submitCAS;
+    window.openCAS = openCAS;
+    window.closeCAS = closeCAS;
+    window.newSim = newSim;
+
     window.setSpeed = setSpeed;
 
-    // Service worker registration (keep inside the document)
+    window.openHousehold = openHousehold;
+    window.closeHousehold = closeHousehold;
+    window.switchActiveSim = switchActiveSim;
+
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js")
         .then(() => console.log("SW registered"))
         .catch(err => console.error("SW failed", err));
     }
   </script>
+
 </body>
 </html>
