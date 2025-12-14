@@ -1,5 +1,5 @@
-import { state } from "./state.js";
-import { saveGame } from "./storage.js";
+import { state, resetState } from "./state.js";
+import { saveGame, clearSave } from "./storage.js";
 
 export function openCAS() {
   const cas = document.getElementById("cas");
@@ -12,7 +12,6 @@ export function closeCAS() {
 }
 
 export function hydrateCASFromState() {
-  // Fill fields from current state (which should already be loaded from storage)
   const nameEl = document.getElementById("cas-name");
   const ageEl = document.getElementById("cas-age");
   const traitEl = document.getElementById("cas-trait");
@@ -22,9 +21,8 @@ export function hydrateCASFromState() {
   if (ageEl) ageEl.value = state.sim?.age ?? "Young Adult";
   if (traitEl) traitEl.value = (state.sim?.traits?.[0]) ?? "Creative";
 
-  // Button label changes if there is a meaningful saved sim
   const hasSaveSim =
-    !!state.sim?.name && state.sim.name !== "New Sim" && state.sim.name !== "New Sim";
+    !!state.sim?.name && state.sim.name !== "New Sim";
 
   if (btn) btn.textContent = hasSaveSim ? "Continue" : "Start Life";
 }
@@ -40,4 +38,13 @@ export function submitCAS() {
 
   saveGame();
   closeCAS();
+}
+
+export function newSim() {
+  // Clear saved data and reset runtime state
+  clearSave();
+  resetState();
+
+  // Show CAS fresh
+  openCAS();
 }
