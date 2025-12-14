@@ -1,25 +1,11 @@
 import { addMoodlet } from "./moodlets.js";
 import { gainSkillXp } from "./skills.js";
 import { addMemory } from "./memory.js";
+import { state } from "./state.js";
 
 function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
 
 export const ActionRegistry = {
-  EAT_SNACK: {
-    label: "Get a snack",
-    steps: 2,
-    tick(sim, item) {
-      if (item.stepsDone === 0) addMoodlet(sim, "Thinking about food", "Focused", 8, 3);
-      sim.needs.energy = clamp(sim.needs.energy - 1, 0, 100);
-      if (item.stepsDone >= item.stepsTotal - 1) {
-        sim.needs.hunger = clamp(sim.needs.hunger + 20, 0, 100);
-        addMoodlet(sim, "Had a snack", "Fine", 10, 5);
-        addMemory(sim, "Grabbed a quick snack", "Fine", 0.35);
-      }
-      return true;
-    }
-  },
-
   EAT_MEAL: {
     label: "Eat a meal",
     steps: 3,
@@ -31,22 +17,6 @@ export const ActionRegistry = {
         gainSkillXp(sim, "Cooking", 12);
         addMoodlet(sim, "Well fed", "Happy", 14, 7);
         addMemory(sim, "Ate a full meal", "Happy", 0.55);
-      }
-      return true;
-    }
-  },
-
-  COOK_MEAL: {
-    label: "Cook meal",
-    steps: 4,
-    tick(sim, item) {
-      if (item.stepsDone === 0) addMoodlet(sim, "Cooking...", "Focused", 12, 5);
-      sim.needs.energy = clamp(sim.needs.energy - 2, 0, 100);
-      if (item.stepsDone >= item.stepsTotal - 1) {
-        gainSkillXp(sim, "Cooking", 20);
-        addMoodlet(sim, "Made something tasty", "Inspired", 14, 7);
-        addMemory(sim, "Cooked a meal", "Inspired", 0.65);
-        sim.needs.hunger = clamp(sim.needs.hunger + 10, 0, 100);
       }
       return true;
     }
@@ -68,16 +38,69 @@ export const ActionRegistry = {
     }
   },
 
-  NAP: {
-    label: "Take a nap",
+  /* ✅ NEW: Walk to room (Lots/Rooms) */
+  WALK_TO_ROOM: {
+    label: "Walk to room",
     steps: 3,
     tick(sim, item) {
-      if (item.stepsDone === 0) addMoodlet(sim, "Getting sleepy", "Tired", 10, 4);
-      sim.needs.hunger = clamp(sim.needs.hunger - 1, 0, 100);
+      // params: { lotId, roomId }
+      const { lotId, roomId } = item.params || {};
+      const lot = state.lots?.[lotId];
+      const room = lot?.rooms?.[roomId];
+
+      if (item.stepsDone === 0) {
+        addMoodlet(sim, "On the move", "Fine", 6, 3);
+      }
+
+      // final step: arrive
+      if (item.stepsDone >= item.stepsTotal - 1 && lot && room) {
+        sim.location = { lotId, roomId };
+        addMemory(sim, `Went to ${room.name}`, "Fine", 0.30);
+      }
+      return true;
+    }
+  },
+
+  /* ✅ Feel-good actions (Sims 4 style “boosters”) */
+  FEEL_GOOD_CLEAN: {
+    label: "Tidy up area",
+    steps: 3,
+    tick(sim, item) {
+      if (item.stepsDone === 0) addMoodlet(sim, "Getting organized", "Focused", 10, 4);
+      sim.needs.energy = clamp(sim.needs.energy - 2, 0, 100);
       if (item.stepsDone >= item.stepsTotal - 1) {
-        sim.needs.energy = clamp(sim.needs.energy + 35, 0, 100);
-        addMoodlet(sim, "Rested", "Fine", 12, 6);
-        addMemory(sim, "Took a nap", "Fine", 0.35);
+        addMoodlet(sim, "Space feels fresh", "Happy", 14, 7);
+        gainSkillXp(sim, "Mindfulness", 10);
+        addMemory(sim, "Tidied up and felt better", "Happy", 0.55);
+      }
+      return true;
+    }
+  },
+
+  FEEL_GOOD_SELFCARE: {
+    label: "Self-care routine",
+    steps: 3,
+    tick(sim, item) {
+      if (item.stepsDone === 0) addMoodlet(sim, "Taking care of self", "Inspired", 12, 5);
+      if (item.stepsDone >= item.stepsTotal - 1) {
+        sim.needs.energy = clamp(sim.needs.energy + 15, 0, 100);
+        addMoodlet(sim, "Refreshed", "Happy", 16, 8);
+        gainSkillXp(sim, "SelfCare", 14);
+        addMemory(sim, "Did a self-care routine", "Happy", 0.65);
+      }
+      return true;
+    }
+  },
+
+  FEEL_GOOD_READ: {
+    label: "Read something fun",
+    steps: 3,
+    tick(sim, item) {
+      if (item.stepsDone === 0) addMoodlet(sim, "Curious", "Inspired", 10, 4);
+      if (item.stepsDone >= item.stepsTotal - 1) {
+        addMoodlet(sim, "Cozy focus", "Focused", 14, 7);
+        gainSkillXp(sim, "Mindfulness", 12);
+        addMemory(sim, "Read and felt calmer", "Fine", 0.50);
       }
       return true;
     }
@@ -88,63 +111,6 @@ export const ActionRegistry = {
     steps: 2,
     tick(sim, item) {
       if (item.stepsDone === 0) addMoodlet(sim, "Idle", "Fine", 5, 2);
-      return true;
-    }
-  },
-
-  PRACTICE_CREATIVITY: {
-    label: "Practice creativity",
-    steps: 4,
-    tick(sim, item) {
-      if (item.stepsDone === 0) addMoodlet(sim, "Feeling creative", "Inspired", 12, 5);
-      if (item.stepsDone >= item.stepsTotal - 1) {
-        gainSkillXp(sim, "Cooking", 10);
-        addMoodlet(sim, "Expressed creativity", "Inspired", 14, 6);
-        addMemory(sim, "Did something creative autonomously", "Inspired", 0.5);
-      }
-      return true;
-    }
-  },
-
-  AUTO_EAT: {
-    label: "Autonomously eat",
-    steps: 3,
-    tick(sim, item) {
-      if (item.stepsDone === 0) addMoodlet(sim, "Very hungry", "Uncomfortable", 12, 4);
-      if (item.stepsDone >= item.stepsTotal - 1) {
-        sim.needs.hunger = clamp(sim.needs.hunger + 40, 0, 100);
-        addMoodlet(sim, "Relieved hunger", "Fine", 10, 5);
-        addMemory(sim, "Ate because hunger was low", "Fine", 0.35);
-      }
-      return true;
-    }
-  },
-
-  AUTO_NAP: {
-    label: "Autonomously nap",
-    steps: 3,
-    tick(sim, item) {
-      if (item.stepsDone === 0) addMoodlet(sim, "Exhausted", "Tired", 12, 4);
-      if (item.stepsDone >= item.stepsTotal - 1) {
-        sim.needs.energy = clamp(sim.needs.energy + 35, 0, 100);
-        addMoodlet(sim, "Rested", "Fine", 12, 6);
-        addMemory(sim, "Napped due to low energy", "Fine", 0.35);
-      }
-      return true;
-    }
-  },
-
-  AUTO_SOCIAL: {
-    label: "Autonomously socialize",
-    steps: 3,
-    tick(sim, item) {
-      if (item.stepsDone === 0) addMoodlet(sim, "Feeling lonely", "Sad", 10, 4);
-      if (item.stepsDone >= item.stepsTotal - 1) {
-        sim.needs.social = clamp(sim.needs.social + 25, 0, 100);
-        gainSkillXp(sim, "Charisma", 10);
-        addMoodlet(sim, "Felt connected", "Happy", 12, 6);
-        addMemory(sim, "Socialized due to loneliness", "Happy", 0.45);
-      }
       return true;
     }
   }
