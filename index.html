@@ -86,9 +86,11 @@
       </div>
 
       <div class="hud-bot">
-        <div class="need" id="hunger">🍽️ <span></span></div>
-        <div class="need" id="energy">⚡ <span></span></div>
-        <div class="need" id="social">💬 <span></span></div>
+        <!-- CLICKABLE NEEDS -->
+        <div class="need" id="hunger" onclick="eatMeal()" title="Tap to Eat Meal">🍽️ <span></span></div>
+        <div class="need" id="energy" title="Energy">⚡ <span></span></div>
+        <div class="need" id="social" onclick="socialize()" title="Tap to Socialize">💬 <span></span></div>
+
         <div id="emotion">🙂</div>
       </div>
 
@@ -116,12 +118,15 @@
     </div>
   </div>
 
+  <!-- Main app boot -->
   <script type="module" src="js/app.js"></script>
 
+  <!-- Bridge: expose module funcs to onclick -->
   <script type="module">
     import { submitCAS, openCAS, closeCAS, newSim } from "./js/cas.js";
     import { setSpeed } from "./js/time.js";
     import { openHousehold, closeHousehold, switchActiveSim } from "./js/ui.js";
+    import { eatSnack, eatMeal, socialize } from "./js/actions.js";
 
     window.submitCAS = submitCAS;
     window.openCAS = openCAS;
@@ -134,6 +139,12 @@
     window.closeHousehold = closeHousehold;
     window.switchActiveSim = switchActiveSim;
 
+    // Needs actions
+    window.eatSnack = eatSnack;
+    window.eatMeal = eatMeal;
+    window.socialize = socialize;
+
+    // Service worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js")
         .then(() => console.log("SW registered"))
