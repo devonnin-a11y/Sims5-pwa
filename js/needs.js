@@ -1,11 +1,13 @@
-import { state } from "./state.js";
+import { getActiveSim } from "./state.js";
 
 export function tickNeeds() {
-  state.sim.needs.hunger -= 2;
-  state.sim.needs.energy -= 1;
-  state.sim.needs.social -= 1;
+  const sim = getActiveSim();
 
-  Object.keys(state.sim.needs).forEach(n => {
-    state.sim.needs[n] = Math.max(0, state.sim.needs[n]);
-  });
+  sim.needs.hunger -= 2;
+  sim.needs.energy -= 1;
+  sim.needs.social -= 1;
+
+  for (const k of Object.keys(sim.needs)) {
+    sim.needs[k] = Math.max(0, Math.min(100, sim.needs[k]));
+  }
 }
