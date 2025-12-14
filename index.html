@@ -15,7 +15,7 @@
 <body>
 
 <!-- ======================
-     PANELS
+     PANELS (hidden by default via CSS)
 ====================== -->
 
 <div id="household" class="panel">
@@ -91,8 +91,8 @@
   <div id="hud">
     <div class="hud-top">
       <div class="sim-meta">
-        <div id="sim-name">Sim</div>
-        <div id="sim-trait">Trait</div>
+        <div id="sim-name" class="sim-name">Sim</div>
+        <div id="sim-trait" class="sim-trait">Trait</div>
       </div>
 
       <div class="hud-actions">
@@ -153,7 +153,7 @@
 </div>
 
 <!-- ======================
-     SCRIPTS
+     MODULES
 ====================== -->
 
 <script type="module" src="js/app.js"></script>
@@ -162,37 +162,57 @@
   import { submitCAS, openCAS, closeCAS, newSim } from "./js/cas.js";
   import { setSpeed } from "./js/time.js";
   import {
-    openHousehold, closeHousehold,
-    openLots, closeLots,
-    createLotUI, addRoomUI
+    renderUI,
+    openHousehold, closeHousehold, switchActiveSim,
+    openLots, closeLots, renderLotsPanel,
+    createLotUI, addRoomUI, setActiveLotUI,
+    objectAction
   } from "./js/ui.js";
+  import { cancelAction, moveAction } from "./js/queue.js";
   import {
-    eatMeal, socialize,
-    feelGoodSelfCare
+    eatMeal, socialize, walkToRoom,
+    feelGoodClean, feelGoodSelfCare, feelGoodRead
   } from "./js/actions.js";
 
+  // ✅ Always exists
+  window.toggleNookPhone = () => {
+    document.getElementById("nookphone").classList.toggle("show");
+  };
+
+  // CAS
   window.submitCAS = submitCAS;
   window.openCAS = openCAS;
   window.closeCAS = closeCAS;
   window.newSim = newSim;
 
+  // Time
   window.setSpeed = setSpeed;
 
+  // UI
+  window.renderUI = renderUI;
   window.openHousehold = openHousehold;
   window.closeHousehold = closeHousehold;
+  window.switchActiveSim = switchActiveSim;
 
-  window.openLots = openLots;
+  window.openLots = () => { openLots(); renderLotsPanel(); };
   window.closeLots = closeLots;
+  window.renderLotsPanel = renderLotsPanel;
   window.createLotUI = createLotUI;
   window.addRoomUI = addRoomUI;
+  window.setActiveLotUI = setActiveLotUI;
 
+  // Object actions + Queue controls
+  window.objectAction = objectAction;
+  window.cancelAction = cancelAction;
+  window.moveAction = moveAction;
+
+  // Actions
   window.eatMeal = eatMeal;
   window.socialize = socialize;
+  window.walkToRoom = walkToRoom;
+  window.feelGoodClean = feelGoodClean;
   window.feelGoodSelfCare = feelGoodSelfCare;
-
-  window.toggleNookPhone = () => {
-    document.getElementById("nookphone").classList.toggle("show");
-  };
+  window.feelGoodRead = feelGoodRead;
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./service-worker.js");
