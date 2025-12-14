@@ -8,24 +8,37 @@ export const defaultState = {
         id: "sim-1",
         name: "New Sim",
         age: "Young Adult",
+
         traits: [
           { name: "Creative", level: 1, xp: 0 }
         ],
+
+        // ✅ VISUAL CAS (SLIDER-READY DATA)
+        appearance: {
+          body: { height: 0.5, weight: 0.5 },
+          face: { jaw: 0.5, eyes: 0.5 }
+        },
+
         needs: { hunger: 80, energy: 80, social: 80 },
         emotion: "Fine",
         autonomy: true,
 
         // Systems
         memories: [],
+        moodlets: [],
+        queue: [],
+
         relationships: {
           spouseId: null,
           parentIds: [],
           childIds: []
         },
+
         skills: {
           Cooking: { level: 1, xp: 0 },
           Charisma: { level: 1, xp: 0 }
         },
+
         career: {
           track: "Unemployed",
           level: 0,
@@ -47,9 +60,4 @@ export function resetState() {
 export function getActiveSim() {
   const id = state.household.activeSimId;
   return state.household.sims[id];
-}
-
-appearance: {
-  body: { height: 0.5, weight: 0.5 },
-  face: { jaw: 0.5, eyes: 0.5 }
 }
