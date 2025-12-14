@@ -2,33 +2,48 @@
   position: fixed;
   inset: 0;
   display: none;
+  pointer-events: none;
   background: rgba(0,0,0,0.18);
   backdrop-filter: blur(6px);
   align-items: center;
   justify-content: center;
-  z-index: 120;
+  z-index: 220;
 }
 
 #nookphone.show {
   display: flex;
+  pointer-events: auto;
 }
 
 .nookphone-card {
+  width: min(360px, 92vw);
   background: var(--paper);
   border-radius: 34px;
   padding: 18px;
-  width: min(360px, 92vw);
   box-shadow: var(--shadow-soft);
   animation: popIn 220ms ease-out;
 }
 
 @keyframes popIn {
-  from {
-    transform: scale(0.92) translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
+  from { transform: scale(0.92) translateY(10px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
 }
+
+.nook-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.nook-icon {
+  background: var(--paper-dark);
+  border-radius: 22px;
+  padding: 18px;
+  font-size: 26px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  user-select: none;
+}
+
+.nook-icon:active { transform: scale(0.96); }
