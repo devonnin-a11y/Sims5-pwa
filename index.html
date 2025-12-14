@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/core.css" />
   <link rel="stylesheet" href="css/hud.css" />
   <link rel="stylesheet" href="css/cas.css" />
+  <link rel="stylesheet" href="css/nookphone.css" />
 </head>
 
 <body>
@@ -92,10 +93,9 @@
           <div id="sim-trait" class="sim-trait">Trait</div>
         </div>
 
+        <!-- ✅ Step 2: Replace top HUD buttons with one NookPhone button -->
         <div class="hud-actions">
-          <button class="btn" onclick="openLots()">🏠</button>
-          <button class="btn" onclick="openHousehold()">👥</button>
-          <button class="btn" onclick="openCAS('edit')">✏️</button>
+          <button class="btn primary" onclick="toggleNookPhone()">📱</button>
           <button class="btn danger" onclick="newSim()">♻️</button>
         </div>
       </div>
@@ -130,7 +130,7 @@
           </div>
         </div>
 
-        <!-- ✅ ADDED: Room Objects card -->
+        <!-- ✅ Step 3: Inventory-style Room Objects -->
         <div class="card">
           <div class="card-title">Room Objects</div>
           <div id="room-objects"></div>
@@ -146,6 +146,7 @@
           </div>
         </div>
 
+        <!-- ✅ Step 4: Skills become badges/stamps -->
         <div class="card">
           <div class="card-title">Skills</div>
           <div id="skills"></div>
@@ -169,6 +170,22 @@
     </div>
   </div>
 
+  <!-- ✅ Step 2: NookPhone Popup -->
+  <div id="nookphone" onclick="toggleNookPhone()">
+    <div class="nookphone-card" onclick="event.stopPropagation()">
+      <div class="nookphone-title">NookPhone</div>
+      <div class="nook-grid">
+        <div class="nook-icon" onclick="eatMeal()">🍽️</div>
+        <div class="nook-icon" onclick="feelGoodSelfCare()">🧴</div>
+        <div class="nook-icon" onclick="socialize()">💬</div>
+        <div class="nook-icon" onclick="openLots(); toggleNookPhone()">🏠</div>
+        <div class="nook-icon" onclick="openHousehold(); toggleNookPhone()">👥</div>
+        <div class="nook-icon" onclick="openCAS('edit'); toggleNookPhone()">✏️</div>
+      </div>
+      <div class="nookphone-hint">Tap outside to close</div>
+    </div>
+  </div>
+
   <script type="module" src="js/app.js"></script>
 
   <script type="module">
@@ -181,9 +198,15 @@
     } from "./js/ui.js";
     import { cancelAction, moveAction } from "./js/queue.js";
     import {
-      eatMeal, socialize, walkToRoom,
+      eatMeal, socialize,
       feelGoodClean, feelGoodSelfCare, feelGoodRead
     } from "./js/actions.js";
+
+    // ✅ Step 2 toggle
+    window.toggleNookPhone = () => {
+      const el = document.getElementById("nookphone");
+      el.style.display = el.style.display === "flex" ? "none" : "flex";
+    };
 
     window.submitCAS = submitCAS;
     window.openCAS = openCAS;
@@ -208,7 +231,6 @@
 
     window.eatMeal = eatMeal;
     window.socialize = socialize;
-    window.walkToRoom = walkToRoom;
 
     window.feelGoodClean = feelGoodClean;
     window.feelGoodSelfCare = feelGoodSelfCare;
