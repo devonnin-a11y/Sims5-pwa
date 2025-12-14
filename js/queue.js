@@ -1,19 +1,33 @@
 import { getActiveSim } from "./state.js";
 import { saveGame } from "./storage.js";
+import { ActionRegistry } from "./actionRegistry.js";
 
 export function ensureQueue(sim) {
   sim.queue = sim.queue || [];
 }
 
-export function enqueue(action) {
+function newId() {
+  return "q-" + Math.random().toString(16).slice(2, 10);
+}
+
+export function enqueueType(type, params = {}, opts = {}) {
   const sim = getActiveSim();
   ensureQueue(sim);
 
+  const def = ActionRegistry[type];
+  if (!def) {
+    console.warn("Unknown action type:", type);
+    return;
+  }
+
   sim.queue.push({
-    id: crypto.randomUUID(),
-    label: action.label,
-    run: action.run,
-    cancelable: action.cancelable !== false
+    id: newId(),
+    type,
+    label: opts.label || def.label,
+    cancelable: opts.cancelable !== false,
+    params,
+    stepsTotal: opts.stepsTotal || def.steps,
+    stepsDone: 0
   });
 
   saveGame();
@@ -46,11 +60,24 @@ export function tickQueue() {
 
   if (sim.queue.length === 0) return;
 
-  const current = sim.queue[0];
-  const done = current.run(sim);
-
-  if (done) {
+  const item = sim.queue[0];
+  const def = ActionRegistry[item.type];
+  if (!def) {
+    // drop broken items
     sim.queue.shift();
     saveGame();
+    return;
   }
+
+  // Run one "step" of the action per tick
+  def.tick(sim, item);
+
+  item.stepsDone = Math.min(item.stepsTotal, item.stepsDone + 1);
+
+  // Done?
+  if (item.stepsDone >= item.stepsTotal) {
+    sim.queue.shift();
+  }
+
+  saveGame();
 }
