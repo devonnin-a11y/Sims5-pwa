@@ -9,45 +9,26 @@
   z-index: 120;
 }
 
+#nookphone.show {
+  display: flex;
+}
+
 .nookphone-card {
-  width: min(360px, 92vw);
   background: var(--paper);
   border-radius: 34px;
   padding: 18px;
+  width: min(360px, 92vw);
   box-shadow: var(--shadow-soft);
+  animation: popIn 220ms ease-out;
 }
 
-.nookphone-title {
-  font-weight: 1000;
-  font-size: 18px;
-  margin-bottom: 14px;
-  color: var(--ink-strong);
-}
-
-.nook-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.nook-icon {
-  background: var(--paper-dark);
-  border-radius: 22px;
-  padding: 18px;
-  font-size: 26px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-soft);
-  user-select: none;
-  transition: transform 120ms ease;
-}
-
-.nook-icon:active {
-  transform: scale(0.96);
-}
-
-.nookphone-hint {
-  margin-top: 14px;
-  opacity: 0.7;
-  font-size: 12px;
+@keyframes popIn {
+  from {
+    transform: scale(0.92) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
