@@ -2,6 +2,10 @@ import { state } from "./state.js";
 import { tickNeeds } from "./needs.js";
 import { updateEmotion } from "./emotions.js";
 import { runAutonomy } from "./autonomy.js";
+import { tickMemories } from "./memory.js";
+import { tickTraitEvolution } from "./traits.js";
+import { tickSkills } from "./skills.js";
+import { tickCareer } from "./careers.js";
 import { saveGame } from "./storage.js";
 
 export function startClock() {
@@ -15,9 +19,17 @@ export function startClock() {
       state.time.day += 1;
     }
 
+    // Core loops
     tickNeeds();
     updateEmotion();
     runAutonomy();
+
+    // New systems
+    tickMemories();
+    tickTraitEvolution();
+    tickSkills();
+    tickCareer();
+
     saveGame();
   }, 3000);
 }
