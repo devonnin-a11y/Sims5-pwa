@@ -1,27 +1,22 @@
-import { state } from "./state.js";
-import { addMemory } from "./memory.js";
+import { playSound } from "./sound.js";
+import { showPopup } from "./ui.js";
 
-export function gainSkillXp(sim, skillName, amount) {
+export function gainSkillXp(sim, skill, amount) {
   sim.skills = sim.skills || {};
-  if (!sim.skills[skillName]) sim.skills[skillName] = { level: 1, xp: 0 };
+  sim.skills[skill] = sim.skills[skill] || { level: 1, xp: 0 };
 
-  const skill = sim.skills[skillName];
-  skill.xp += amount;
+  const s = sim.skills[skill];
+  s.xp += amount;
 
-  while (skill.xp >= 100) {
-    skill.xp -= 100;
-    skill.level = Math.min(10, skill.level + 1);
-    addMemory(sim, `Leveled ${skillName} to ${skill.level}`, "Fine", 0.7);
+  if (s.xp >= 100) {
+    s.xp -= 100;
+    s.level += 1;
+
+    playSound("stamp");
+    showPopup({
+      title: "Skill Up!",
+      message: `${skill} reached Level ${s.level}`,
+      icon: "⭐️"
+    });
   }
-}
-
-export function tickSkills() {
-  // Passive growth based on traits/emotions (basic)
-  Object.values(state.household.sims).forEach(sim => {
-    const primary = sim.traits?.[0]?.name;
-
-    if (primary === "Creative") gainSkillXp(sim, "Cooking", 2);
-    if (primary === "Genius") gainSkillXp(sim, "Logic", 2);
-    if (primary === "Romantic") gainSkillXp(sim, "Charisma", 2);
-  });
 }
