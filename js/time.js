@@ -6,6 +6,8 @@ import { tickMemories } from "./memory.js";
 import { tickTraitEvolution } from "./traits.js";
 import { tickSkills } from "./skills.js";
 import { tickCareer } from "./careers.js";
+import { tickMoodlets } from "./moodlets.js";
+import { tickAging } from "./aging.js";
 import { saveGame } from "./storage.js";
 
 export function startClock() {
@@ -24,11 +26,15 @@ export function startClock() {
     updateEmotion();
     runAutonomy();
 
-    // New systems
+    // Systems
     tickMemories();
     tickTraitEvolution();
     tickSkills();
     tickCareer();
+
+    // NEW: Moodlets + Aging
+    tickMoodlets();
+    tickAging();
 
     saveGame();
   }, 3000);
