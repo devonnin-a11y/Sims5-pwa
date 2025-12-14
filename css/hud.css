@@ -16,22 +16,33 @@
 .hud-bot { margin-top: 10px; }
 
 .sim-meta { display: flex; flex-direction: column; }
-.sim-name { font-weight: 800; font-size: 18px; }
+.sim-name { font-weight: 900; font-size: 18px; }
 .sim-trait { opacity: 0.9; font-size: 13px; }
 
-.need span { margin-left: 6px; }
+.need {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.10);
+  cursor: pointer;
+  user-select: none;
+}
+
+.need span { margin-left: 6px; font-weight: 800; }
 
 .btn {
-  padding: 8px 10px;
-  border-radius: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
   border: 0;
   background: rgba(255,255,255,0.12);
   color: white;
   cursor: pointer;
+  font-weight: 800;
 }
 
-.btn.primary { background: #00ffcc; color: #062025; font-weight: 800; }
-.btn.danger { background: #ff5a5a; color: #200; font-weight: 800; }
+.btn.primary { background: #00ffcc; color: #062025; }
+.btn.danger { background: #ff5a5a; color: #200; }
 
 .hud-panels {
   margin-top: 12px;
@@ -40,19 +51,66 @@
   gap: 10px;
 }
 
+/* Mobile: stack cards */
+@media (max-width: 700px) {
+  .hud-panels {
+    grid-template-columns: 1fr;
+  }
+}
+
 .card {
   background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 10px;
-  min-height: 90px;
+  border-radius: 14px;
+  padding: 12px;
+  min-height: 100px;
+  overflow: hidden;
 }
 
 .card-title {
-  font-weight: 800;
-  margin-bottom: 8px;
+  font-weight: 900;
+  margin-bottom: 10px;
   opacity: 0.95;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
+/* ✅ Queue styling */
+#queue {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.queue-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.queue-item span {
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70%;
+}
+
+.queue-item button {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 0;
+  background: rgba(255,255,255,0.14);
+  color: white;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+/* Panels */
 .panel {
   position: fixed;
   inset: 0;
