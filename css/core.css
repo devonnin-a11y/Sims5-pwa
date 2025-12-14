@@ -1,45 +1,42 @@
-:root{
-  --bg1:#cfefff;
-  --bg2:#fef6d8;
-  --ink:#0b1f26;
-  --hudGlass: rgba(255,255,255,0.70);
-  --hudBorder: rgba(11,31,38,0.10);
-  --accent:#00d4c7;
-  --accent2:#7a5cff;
-  --danger:#ff5a5a;
-  --shadow: 0 10px 30px rgba(0,0,0,0.10);
-  --radius: 18px;
+:root {
+  --paper: #f7f3e8;
+  --paper-dark: #e8e2d2;
+  --ink-soft: #5b5b4f;
+  --ink-strong: #3f3f36;
+
+  --green: #9fd8a0;
+  --blue: #a9d6e5;
+  --yellow: #f3d38b;
+  --pink: #e7b7c8;
+
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 8px 20px rgba(0,0,0,0.08);
 }
 
-*{ box-sizing:border-box; }
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  color: var(--ink);
-  font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(circle at 20% 15%, var(--bg1), transparent 55%),
-              radial-gradient(circle at 85% 35%, var(--bg2), transparent 55%),
-              linear-gradient(180deg, #f7fbff, #fdf7ef);
-  min-height: 100vh;
-  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink-strong);
+  font-family: ui-rounded, system-ui, -apple-system;
+  line-height: 1.4;
 }
 
 #game {
   min-height: 100vh;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  /* ✅ Fix: prevents avatar clipping at top on desktop */
-  padding-top: 32px;
-  padding-bottom: 24px;
-  justify-content: flex-start;
   gap: 12px;
 }
 
 #sim-avatar {
-  font-size: clamp(64px, 9vw, 110px);
+  font-size: clamp(64px, 9vw, 120px);
   line-height: 1;
   margin-top: 6px;
-  filter: drop-shadow(0 8px 10px rgba(0,0,0,0.10));
 }
