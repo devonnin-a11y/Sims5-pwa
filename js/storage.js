@@ -8,12 +8,14 @@ export function saveGame() {
 
 export function loadGame() {
   try {
-    const save = localStorage.getItem(KEY);
-    if (!save) return;
-    const parsed = JSON.parse(save);
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
     Object.assign(state, parsed);
+    return true;
   } catch (e) {
     console.warn("Save load failed:", e);
+    return false;
   }
 }
 
