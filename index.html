@@ -24,6 +24,28 @@
     </div>
   </div>
 
+  <!-- Lots / Rooms Panel -->
+  <div id="lotsPanel" class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Lots & Rooms</div>
+      <button class="btn" onclick="closeLots()">✖</button>
+    </div>
+
+    <div style="margin-top:10px; font-weight:1000;">Lots</div>
+    <div id="lots-list" class="list"></div>
+
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn primary" onclick="createLotUI()">➕ New Lot</button>
+    </div>
+
+    <div style="margin-top:14px; font-weight:1000;">Rooms (Active Lot)</div>
+    <div id="rooms-list" class="list"></div>
+
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn primary" onclick="addRoomUI()">➕ Add Room</button>
+    </div>
+  </div>
+
   <!-- Create / Edit Sim -->
   <div id="cas" class="panel">
     <div class="panel-head">
@@ -71,6 +93,7 @@
         </div>
 
         <div class="hud-actions">
+          <button class="btn" onclick="openLots()">🏠</button>
           <button class="btn" onclick="openHousehold()">👥</button>
           <button class="btn" onclick="openCAS('edit')">✏️</button>
           <button class="btn danger" onclick="newSim()">♻️</button>
@@ -86,10 +109,9 @@
       </div>
 
       <div class="hud-bot">
-        <!-- CLICKABLE NEEDS -->
-        <div class="need" id="hunger" onclick="eatMeal()" title="Tap to Eat Meal">🍽️ <span></span></div>
-        <div class="need" id="energy" title="Energy">⚡ <span></span></div>
-        <div class="need" id="social" onclick="socialize()" title="Tap to Socialize">💬 <span></span></div>
+        <div class="need" id="hunger" onclick="eatMeal()" title="Queue: Eat Meal">🍽️ <span></span></div>
+        <div class="need" id="energy" onclick="feelGoodSelfCare()" title="Queue: Self-care">⚡ <span></span></div>
+        <div class="need" id="social" onclick="socialize()" title="Queue: Socialize">💬 <span></span></div>
 
         <div id="emotion">🙂</div>
       </div>
@@ -98,6 +120,24 @@
         <div class="card">
           <div class="card-title">Queue</div>
           <div id="queue"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Lots</div>
+          <div id="lots"></div>
+          <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            <button class="btn primary" onclick="openLots()">Open Lots</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Feel Good</div>
+          <div class="small">Quick actions that boost mood + skills.</div>
+          <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            <button class="btn primary" onclick="feelGoodClean()">🧹 Tidy</button>
+            <button class="btn primary" onclick="feelGoodSelfCare()">🧴 Self-care</button>
+            <button class="btn primary" onclick="feelGoodRead()">📚 Read</button>
+          </div>
         </div>
 
         <div class="card">
@@ -123,16 +163,21 @@
     </div>
   </div>
 
-  <!-- Main app boot -->
   <script type="module" src="js/app.js"></script>
 
-  <!-- Bridge: expose module funcs to onclick -->
   <script type="module">
     import { submitCAS, openCAS, closeCAS, newSim } from "./js/cas.js";
     import { setSpeed } from "./js/time.js";
-    import { openHousehold, closeHousehold, switchActiveSim } from "./js/ui.js";
-    import { eatSnack, eatMeal, socialize } from "./js/actions.js";
+    import {
+      openHousehold, closeHousehold, switchActiveSim,
+      openLots, closeLots, renderLotsPanel,
+      createLotUI, addRoomUI, setActiveLotUI
+    } from "./js/ui.js";
     import { cancelAction, moveAction } from "./js/queue.js";
+    import {
+      eatMeal, socialize, walkToRoom,
+      feelGoodClean, feelGoodSelfCare, feelGoodRead
+    } from "./js/actions.js";
 
     window.submitCAS = submitCAS;
     window.openCAS = openCAS;
@@ -145,16 +190,24 @@
     window.closeHousehold = closeHousehold;
     window.switchActiveSim = switchActiveSim;
 
-    // Needs actions
-    window.eatSnack = eatSnack;
-    window.eatMeal = eatMeal;
-    window.socialize = socialize;
+    window.openLots = () => { openLots(); renderLotsPanel(); };
+    window.closeLots = closeLots;
+    window.renderLotsPanel = renderLotsPanel;
+    window.createLotUI = createLotUI;
+    window.addRoomUI = addRoomUI;
+    window.setActiveLotUI = setActiveLotUI;
 
-    // Queue controls
     window.cancelAction = cancelAction;
     window.moveAction = moveAction;
 
-    // Service worker
+    window.eatMeal = eatMeal;
+    window.socialize = socialize;
+    window.walkToRoom = walkToRoom;
+
+    window.feelGoodClean = feelGoodClean;
+    window.feelGoodSelfCare = feelGoodSelfCare;
+    window.feelGoodRead = feelGoodRead;
+
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js")
         .then(() => console.log("SW registered"))
