@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Sims 5 PWA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/core.css" />
   <link rel="stylesheet" href="css/hud.css" />
@@ -13,235 +14,190 @@
 
 <body>
 
-  <!-- Household Switcher -->
-  <div id="household" class="panel">
-    <div class="panel-head">
-      <div class="panel-title">Household</div>
-      <button class="btn" onclick="closeHousehold()">✖</button>
-    </div>
-    <div id="household-list" class="list"></div>
-    <div class="panel-actions">
-      <button class="btn primary" onclick="openCAS('create')">➕ Add Sim</button>
-    </div>
+<!-- ======================
+     PANELS
+====================== -->
+
+<div id="household" class="panel">
+  <div class="panel-head">
+    <div class="panel-title">Household</div>
+    <button class="btn" onclick="closeHousehold()">✖</button>
+  </div>
+  <div id="household-list" class="list"></div>
+  <div class="panel-actions">
+    <button class="btn primary" onclick="openCAS('create')">➕ Add Sim</button>
+  </div>
+</div>
+
+<div id="lotsPanel" class="panel">
+  <div class="panel-head">
+    <div class="panel-title">Lots & Rooms</div>
+    <button class="btn" onclick="closeLots()">✖</button>
   </div>
 
-  <!-- Lots / Rooms Panel -->
-  <div id="lotsPanel" class="panel">
-    <div class="panel-head">
-      <div class="panel-title">Lots & Rooms</div>
-      <button class="btn" onclick="closeLots()">✖</button>
-    </div>
+  <div class="label">Lots</div>
+  <div id="lots-list" class="list"></div>
 
-    <div style="margin-top:10px; font-weight:1000;">Lots</div>
-    <div id="lots-list" class="list"></div>
+  <button class="btn primary" onclick="createLotUI()">➕ New Lot</button>
 
-    <div style="display:flex; gap:10px; margin-top:10px;">
-      <button class="btn primary" onclick="createLotUI()">➕ New Lot</button>
-    </div>
+  <div class="label" style="margin-top:14px;">Rooms</div>
+  <div id="rooms-list" class="list"></div>
 
-    <div style="margin-top:14px; font-weight:1000;">Rooms (Active Lot)</div>
-    <div id="rooms-list" class="list"></div>
+  <button class="btn primary" onclick="addRoomUI()">➕ Add Room</button>
+</div>
 
-    <div style="display:flex; gap:10px; margin-top:10px;">
-      <button class="btn primary" onclick="addRoomUI()">➕ Add Room</button>
-    </div>
+<div id="cas" class="panel">
+  <div class="panel-head">
+    <div class="panel-title" id="cas-title">Create-A-Sim</div>
+    <button class="btn" onclick="closeCAS()">✖</button>
   </div>
 
-  <!-- Create / Edit Sim -->
-  <div id="cas" class="panel">
-    <div class="panel-head">
-      <div class="panel-title" id="cas-title">Create-A-Sim</div>
-      <button class="btn" onclick="closeCAS()">✖</button>
-    </div>
+  <label class="label">Name</label>
+  <input id="cas-name" placeholder="Sim Name" />
 
-    <label class="label">Name</label>
-    <input id="cas-name" placeholder="Sim Name" />
+  <label class="label">Age</label>
+  <select id="cas-age">
+    <option>Child</option>
+    <option>Teen</option>
+    <option selected>Young Adult</option>
+    <option>Adult</option>
+    <option>Elder</option>
+  </select>
 
-    <label class="label">Age</label>
-    <select id="cas-age">
-      <option>Child</option>
-      <option>Teen</option>
-      <option selected>Young Adult</option>
-      <option>Adult</option>
-      <option>Elder</option>
-    </select>
+  <label class="label">Primary Trait</label>
+  <select id="cas-trait">
+    <option>Creative</option>
+    <option>Active</option>
+    <option>Family-Oriented</option>
+    <option>Lazy</option>
+    <option>Genius</option>
+    <option>Romantic</option>
+    <option>Goofball</option>
+  </select>
 
-    <label class="label">Primary Trait</label>
-    <select id="cas-trait">
-      <option>Creative</option>
-      <option>Active</option>
-      <option>Family-Oriented</option>
-      <option>Lazy</option>
-      <option>Genius</option>
-      <option>Romantic</option>
-      <option>Goofball</option>
-    </select>
-
-    <div class="row">
-      <button id="cas-save-btn" class="btn primary" onclick="submitCAS()">Save</button>
-      <button class="btn danger" onclick="newSim()">Reset Save</button>
-    </div>
+  <div class="row">
+    <button class="btn primary" onclick="submitCAS()">Save</button>
+    <button class="btn danger" onclick="newSim()">Reset</button>
   </div>
+</div>
 
-  <div id="game">
-    <div id="sim-avatar">🧍</div>
+<!-- ======================
+     GAME
+====================== -->
 
-    <div id="hud">
-      <div class="hud-top">
-        <div class="sim-meta">
-          <div id="sim-name" class="sim-name">Sim</div>
-          <div id="sim-trait" class="sim-trait">Trait</div>
-        </div>
+<div id="game">
+  <div id="sim-avatar">🧍</div>
 
-        <!-- ✅ Step 2: Replace top HUD buttons with one NookPhone button -->
-        <div class="hud-actions">
-          <button class="btn primary" onclick="toggleNookPhone()">📱</button>
-          <button class="btn danger" onclick="newSim()">♻️</button>
-        </div>
+  <div id="hud">
+    <div class="hud-top">
+      <div class="sim-meta">
+        <div id="sim-name">Sim</div>
+        <div id="sim-trait">Trait</div>
       </div>
 
-      <div class="hud-mid">
-        <div id="time"></div>
-        <button class="btn" onclick="setSpeed(0)">⏸️</button>
-        <button class="btn" onclick="setSpeed(1)">▶️</button>
-        <button class="btn" onclick="setSpeed(2)">⏩</button>
-        <button class="btn" onclick="setSpeed(3)">⏭️</button>
+      <div class="hud-actions">
+        <button class="btn primary" onclick="toggleNookPhone()">📱</button>
+        <button class="btn danger" onclick="newSim()">♻️</button>
+      </div>
+    </div>
+
+    <div class="hud-mid">
+      <div id="time"></div>
+      <button class="btn" onclick="setSpeed(0)">⏸️</button>
+      <button class="btn" onclick="setSpeed(1)">▶️</button>
+      <button class="btn" onclick="setSpeed(2)">⏩</button>
+      <button class="btn" onclick="setSpeed(3)">⏭️</button>
+    </div>
+
+    <div class="hud-bot">
+      <div class="need" id="hunger" onclick="eatMeal()">🍽️ <span></span></div>
+      <div class="need" id="energy" onclick="feelGoodSelfCare()">⚡ <span></span></div>
+      <div class="need" id="social" onclick="socialize()">💬 <span></span></div>
+      <div id="emotion">🙂</div>
+    </div>
+
+    <div class="hud-panels">
+      <div class="card">
+        <div class="card-title">Queue</div>
+        <div id="queue"></div>
       </div>
 
-      <div class="hud-bot">
-        <div class="need" id="hunger" onclick="eatMeal()" title="Queue: Eat Meal">🍽️ <span></span></div>
-        <div class="need" id="energy" onclick="feelGoodSelfCare()" title="Queue: Self-care">⚡ <span></span></div>
-        <div class="need" id="social" onclick="socialize()" title="Queue: Socialize">💬 <span></span></div>
-
-        <div id="emotion">🙂</div>
+      <div class="card">
+        <div class="card-title">Room Objects</div>
+        <div id="room-objects"></div>
       </div>
 
-      <div class="hud-panels">
-        <div class="card">
-          <div class="card-title">Queue</div>
-          <div id="queue"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Lots</div>
-          <div id="lots"></div>
-          <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-            <button class="btn primary" onclick="openLots()">Open Lots</button>
-          </div>
-        </div>
-
-        <!-- ✅ Step 3: Inventory-style Room Objects -->
-        <div class="card">
-          <div class="card-title">Room Objects</div>
-          <div id="room-objects"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Feel Good</div>
-          <div class="small">Quick actions that boost mood + skills.</div>
-          <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-            <button class="btn primary" onclick="feelGoodClean()">🧹 Tidy</button>
-            <button class="btn primary" onclick="feelGoodSelfCare()">🧴 Self-care</button>
-            <button class="btn primary" onclick="feelGoodRead()">📚 Read</button>
-          </div>
-        </div>
-
-        <!-- ✅ Step 4: Skills become badges/stamps -->
-        <div class="card">
-          <div class="card-title">Skills</div>
-          <div id="skills"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Career</div>
-          <div id="career"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Memories</div>
-          <div id="memories"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Family</div>
-          <div id="family"></div>
-        </div>
+      <div class="card">
+        <div class="card-title">Skills</div>
+        <div id="skills"></div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- ✅ Step 2: NookPhone Popup -->
-  <div id="nookphone" onclick="toggleNookPhone()">
-    <div class="nookphone-card" onclick="event.stopPropagation()">
-      <div class="nookphone-title">NookPhone</div>
-      <div class="nook-grid">
-        <div class="nook-icon" onclick="eatMeal()">🍽️</div>
-        <div class="nook-icon" onclick="feelGoodSelfCare()">🧴</div>
-        <div class="nook-icon" onclick="socialize()">💬</div>
-        <div class="nook-icon" onclick="openLots(); toggleNookPhone()">🏠</div>
-        <div class="nook-icon" onclick="openHousehold(); toggleNookPhone()">👥</div>
-        <div class="nook-icon" onclick="openCAS('edit'); toggleNookPhone()">✏️</div>
-      </div>
-      <div class="nookphone-hint">Tap outside to close</div>
+<!-- ======================
+     NOOKPHONE
+====================== -->
+
+<div id="nookphone" onclick="toggleNookPhone()">
+  <div class="nookphone-card" onclick="event.stopPropagation()">
+    <div class="nook-grid">
+      <div class="nook-icon" onclick="eatMeal()">🍽️</div>
+      <div class="nook-icon" onclick="feelGoodSelfCare()">🧴</div>
+      <div class="nook-icon" onclick="socialize()">💬</div>
+      <div class="nook-icon" onclick="openLots()">🏠</div>
+      <div class="nook-icon" onclick="openHousehold()">👥</div>
+      <div class="nook-icon" onclick="openCAS('edit')">✏️</div>
     </div>
   </div>
+</div>
 
-  <script type="module" src="js/app.js"></script>
+<!-- ======================
+     SCRIPTS
+====================== -->
 
-  <script type="module">
-    import { submitCAS, openCAS, closeCAS, newSim } from "./js/cas.js";
-    import { setSpeed } from "./js/time.js";
-    import {
-      openHousehold, closeHousehold, switchActiveSim,
-      openLots, closeLots, renderLotsPanel,
-      createLotUI, addRoomUI, setActiveLotUI
-    } from "./js/ui.js";
-    import { cancelAction, moveAction } from "./js/queue.js";
-    import {
-      eatMeal, socialize,
-      feelGoodClean, feelGoodSelfCare, feelGoodRead
-    } from "./js/actions.js";
+<script type="module" src="js/app.js"></script>
 
-    // ✅ Step 2 toggle
-    window.toggleNookPhone = () => {
-      const el = document.getElementById("nookphone");
-      el.style.display = el.style.display === "flex" ? "none" : "flex";
-    };
+<script type="module">
+  import { submitCAS, openCAS, closeCAS, newSim } from "./js/cas.js";
+  import { setSpeed } from "./js/time.js";
+  import {
+    openHousehold, closeHousehold,
+    openLots, closeLots,
+    createLotUI, addRoomUI
+  } from "./js/ui.js";
+  import {
+    eatMeal, socialize,
+    feelGoodSelfCare
+  } from "./js/actions.js";
 
-    window.submitCAS = submitCAS;
-    window.openCAS = openCAS;
-    window.closeCAS = closeCAS;
-    window.newSim = newSim;
+  window.submitCAS = submitCAS;
+  window.openCAS = openCAS;
+  window.closeCAS = closeCAS;
+  window.newSim = newSim;
 
-    window.setSpeed = setSpeed;
+  window.setSpeed = setSpeed;
 
-    window.openHousehold = openHousehold;
-    window.closeHousehold = closeHousehold;
-    window.switchActiveSim = switchActiveSim;
+  window.openHousehold = openHousehold;
+  window.closeHousehold = closeHousehold;
 
-    window.openLots = () => { openLots(); renderLotsPanel(); };
-    window.closeLots = closeLots;
-    window.renderLotsPanel = renderLotsPanel;
-    window.createLotUI = createLotUI;
-    window.addRoomUI = addRoomUI;
-    window.setActiveLotUI = setActiveLotUI;
+  window.openLots = openLots;
+  window.closeLots = closeLots;
+  window.createLotUI = createLotUI;
+  window.addRoomUI = addRoomUI;
 
-    window.cancelAction = cancelAction;
-    window.moveAction = moveAction;
+  window.eatMeal = eatMeal;
+  window.socialize = socialize;
+  window.feelGoodSelfCare = feelGoodSelfCare;
 
-    window.eatMeal = eatMeal;
-    window.socialize = socialize;
+  window.toggleNookPhone = () => {
+    document.getElementById("nookphone").classList.toggle("show");
+  };
 
-    window.feelGoodClean = feelGoodClean;
-    window.feelGoodSelfCare = feelGoodSelfCare;
-    window.feelGoodRead = feelGoodRead;
-
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./service-worker.js")
-        .then(() => console.log("SW registered"))
-        .catch(err => console.error("SW failed", err));
-    }
-  </script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./service-worker.js");
+  }
+</script>
 
 </body>
 </html>
