@@ -96,6 +96,11 @@
 
       <div class="hud-panels">
         <div class="card">
+          <div class="card-title">Queue</div>
+          <div id="queue"></div>
+        </div>
+
+        <div class="card">
           <div class="card-title">Skills</div>
           <div id="skills"></div>
         </div>
@@ -127,6 +132,7 @@
     import { setSpeed } from "./js/time.js";
     import { openHousehold, closeHousehold, switchActiveSim } from "./js/ui.js";
     import { eatSnack, eatMeal, socialize } from "./js/actions.js";
+    import { cancelAction, moveAction } from "./js/queue.js";
 
     window.submitCAS = submitCAS;
     window.openCAS = openCAS;
@@ -143,6 +149,10 @@
     window.eatSnack = eatSnack;
     window.eatMeal = eatMeal;
     window.socialize = socialize;
+
+    // Queue controls
+    window.cancelAction = cancelAction;
+    window.moveAction = moveAction;
 
     // Service worker
     if ("serviceWorker" in navigator) {
