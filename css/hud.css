@@ -1,47 +1,218 @@
-#popup {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
+/* =====================
+   GAME LAYOUT
+===================== */
+
+#game {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 12px;
+}
+
+#sim-avatar {
+  font-size: clamp(64px, 9vw, 120px);
+  line-height: 1;
+  margin: 8px 0 6px;
   pointer-events: none;
 }
 
-#popup:not(.show) {
-  display: none;
-}
+/* =====================
+   HUD
+===================== */
 
-.popup-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: var(--paper);
-  border-radius: 26px;
-  padding: 14px 18px;
+#hud {
+  width: min(1080px, 96vw);
+  background: var(--paper-dark);
+  border-radius: var(--radius-lg);
+  padding: 16px;
   box-shadow: var(--shadow-soft);
-  animation: slideUp 260ms ease-out;
 }
 
-.popup-icon {
-  font-size: 28px;
+.hud-top,
+.hud-mid,
+.hud-bot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
 }
 
-.popup-title {
+.hud-mid {
+  margin-top: 8px;
+}
+
+.hud-bot {
+  margin-top: 8px;
+}
+
+.sim-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.sim-name {
   font-weight: 1000;
 }
 
-.popup-msg {
+.sim-trait {
   font-size: 13px;
   opacity: 0.8;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(16px);
-    opacity: 0;
+.need {
+  background: var(--paper);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-weight: 900;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+}
+
+/* =====================
+   CARDS
+===================== */
+
+.hud-panels {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+}
+
+@media (max-width: 820px) {
+  .hud-panels {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+}
+
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  box-shadow: var(--shadow-soft);
+}
+
+.card-title {
+  font-weight: 1000;
+  margin-bottom: 6px;
+}
+
+/* =====================
+   BUTTONS
+===================== */
+
+.btn {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-weight: 1000;
+  cursor: pointer;
+  background: var(--blue);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn.primary {
+  background: var(--green);
+}
+
+.btn.danger {
+  background: var(--pink);
+}
+
+/* =====================
+   OVERLAY PANELS (CRITICAL FIX)
+===================== */
+
+.panel {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(247,243,232,0.96);
+  backdrop-filter: blur(6px);
+
+  display: none; /* ✅ THIS WAS THE BIG BUG */
+  flex-direction: column;
+
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.panel-title {
+  font-weight: 1000;
+  font-size: 18px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list-item {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  box-shadow: var(--shadow-soft);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* =====================
+   ROOM OBJECTS (GRID)
+===================== */
+
+#room-objects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
+  gap: 12px;
+}
+
+.object-card {
+  background: var(--paper-dark);
+  border-radius: 22px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.object-header {
+  font-weight: 1000;
+  margin-bottom: 6px;
+}
+
+.object-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* =====================
+   SKILLS BADGES
+===================== */
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
+  gap: 12px;
+}
+
+.skill-badge {
+  background: var(--paper-dark);
+  border-radius: 22px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: var(--shadow-soft);
 }
