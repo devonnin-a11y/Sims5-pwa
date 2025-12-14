@@ -1,25 +1,19 @@
-#cas {
-  position: fixed;
-  inset: 0;
-  background: #0b1f26;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  z-index: 10;
-}
+.label { margin-top: 12px; display: block; opacity: 0.9; }
 
 #cas input, #cas select {
-  padding: 10px;
-  margin-bottom: 12px;
-  border-radius: 8px;
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 12px;
   border: none;
+  background: rgba(255,255,255,0.10);
+  color: white;
 }
 
-#cas button {
-  padding: 12px;
-  background: #00ffcc;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
+#cas option { color: black; }
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
 }
