@@ -1,83 +1,83 @@
-import { getActiveSim } from "./state.js";
-import { saveGame } from "./storage.js";
+import { state, getActiveSim } from "./state.js";
 import { ActionRegistry } from "./actionRegistry.js";
+import { saveGame } from "./storage.js";
 
-export function ensureQueue(sim) {
-  sim.queue = sim.queue || [];
+function id() {
+  return `a-${Math.random().toString(16).slice(2, 10)}`;
 }
 
-function newId() {
-  return "q-" + Math.random().toString(16).slice(2, 10);
-}
-
-export function enqueueType(type, params = {}, opts = {}) {
+export function enqueueType(type, params = null) {
   const sim = getActiveSim();
-  ensureQueue(sim);
+  if (!sim) return;
+
+  sim.queue = sim.queue || [];
 
   const def = ActionRegistry[type];
-  if (!def) {
-    console.warn("Unknown action type:", type);
-    return;
-  }
 
+  // ✅ Always enqueue, even if missing
   sim.queue.push({
-    id: newId(),
+    id: id(),
     type,
-    label: opts.label || def.label,
-    cancelable: opts.cancelable !== false,
+    label: def?.label ?? `Unknown: ${type}`,
+    stepsTotal: def?.steps ?? 3,
+    stepsDone: 0,
     params,
-    stepsTotal: opts.stepsTotal || def.steps,
-    stepsDone: 0
+    cancelable: true
   });
 
-  saveGame();
+  saveGame?.();
 }
 
-export function cancelAction(id) {
+export function cancelAction(actionId) {
   const sim = getActiveSim();
-  ensureQueue(sim);
-  sim.queue = sim.queue.filter(a => a.id !== id);
-  saveGame();
+  if (!sim?.queue) return;
+  sim.queue = sim.queue.filter(a => a.id !== actionId);
+  saveGame?.();
 }
 
-export function moveAction(id, dir) {
+export function moveAction(actionId, dir) {
   const sim = getActiveSim();
-  ensureQueue(sim);
+  if (!sim?.queue) return;
 
-  const i = sim.queue.findIndex(a => a.id === id);
+  const i = sim.queue.findIndex(a => a.id === actionId);
   if (i < 0) return;
 
   const j = i + dir;
   if (j < 0 || j >= sim.queue.length) return;
 
-  [sim.queue[i], sim.queue[j]] = [sim.queue[j], sim.queue[i]];
-  saveGame();
+  const tmp = sim.queue[i];
+  sim.queue[i] = sim.queue[j];
+  sim.queue[j] = tmp;
+
+  saveGame?.();
 }
 
 export function tickQueue() {
   const sim = getActiveSim();
-  ensureQueue(sim);
+  if (!sim) return;
 
+  sim.queue = sim.queue || [];
   if (sim.queue.length === 0) return;
 
-  const item = sim.queue[0];
-  const def = ActionRegistry[item.type];
-  if (!def) {
-    // drop broken items
-    sim.queue.shift();
-    saveGame();
+  const current = sim.queue[0];
+  const def = ActionRegistry[current.type];
+
+  // If action doesn't exist, still "progress" then finish
+  if (!def || typeof def.tick !== "function") {
+    current.stepsDone += 1;
+    if (current.stepsDone >= current.stepsTotal) sim.queue.shift();
+    saveGame?.();
     return;
   }
 
-  // Run one "step" of the action per tick
-  def.tick(sim, item);
-
-  item.stepsDone = Math.min(item.stepsTotal, item.stepsDone + 1);
+  // Execute step
+  def.tick(sim, current);
+  current.stepsDone += 1;
 
   // Done?
-  if (item.stepsDone >= item.stepsTotal) {
+  if (current.stepsDone >= current.stepsTotal) {
     sim.queue.shift();
   }
 
-  saveGame();
+  saveGame?.();
 }
