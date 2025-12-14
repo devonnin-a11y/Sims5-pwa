@@ -1,175 +1,47 @@
-#hud {
-  width: min(1080px, 96vw);
-  background: var(--paper-dark);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  box-shadow: var(--shadow-soft);
-}
-
-.hud-top, .hud-mid, .hud-bot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.hud-mid { margin-top: 10px; }
-.hud-bot { margin-top: 10px; }
-
-.sim-meta { display:flex; flex-direction:column; gap:2px; }
-.sim-name { font-weight: 1000; font-size: 18px; }
-.sim-trait { opacity: 0.85; font-size: 13px; }
-
-.btn {
-  border-radius: var(--radius-pill);
-  border: none;
-  padding: 10px 14px;
-  font-weight: 1000;
-  cursor: pointer;
-  background: var(--blue);
-  color: var(--ink-strong);
-  box-shadow: var(--shadow-soft);
-}
-
-.btn.primary { background: var(--green); }
-.btn.danger { background: var(--pink); }
-
-.need{
-  background: var(--paper);
-  border-radius: var(--radius-pill);
-  padding: 10px 14px;
-  box-shadow: var(--shadow-soft);
-  font-weight: 1000;
-  user-select:none;
-  cursor:pointer;
-}
-
-.need span { margin-left: 8px; }
-
-.hud-panels{
-  margin-top: 12px;
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-@media (max-width: 820px){
-  .hud-panels{ grid-template-columns: 1fr; }
-}
-
-.card{
-  background: var(--paper);
-  border-radius: var(--radius-lg);
-  padding: 14px;
-  box-shadow: var(--shadow-soft);
-}
-
-.card-title{
-  font-weight: 1000;
-  margin-bottom: 8px;
-}
-
-/* Panels */
-.panel{
+#popup {
   position: fixed;
-  inset: 0;
-  background: rgba(247, 243, 232, 0.96);
-  backdrop-filter: blur(6px);
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  pointer-events: none;
+}
+
+#popup:not(.show) {
   display: none;
-  flex-direction: column;
-  padding: 16px;
-  z-index: 90;
 }
 
-.panel-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.panel-title{
-  font-weight:1000;
-  font-size:18px;
-}
-
-.list{
-  margin-top: 12px;
-  display:flex;
-  flex-direction:column;
-  gap: 10px;
-}
-
-.list-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
+.popup-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   background: var(--paper);
-  border-radius: var(--radius-lg);
-  padding: 12px;
+  border-radius: 26px;
+  padding: 14px 18px;
   box-shadow: var(--shadow-soft);
+  animation: slideUp 260ms ease-out;
 }
 
-/* ✅ Step 3: Inventory-style grid for Room Objects */
-#room-objects{
-  display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 12px;
+.popup-icon {
+  font-size: 28px;
 }
 
-.object-card{
-  background: var(--paper-dark);
-  border-radius: 22px;
-  padding: 12px;
-  box-shadow: var(--shadow-soft);
-  text-align: center;
+.popup-title {
+  font-weight: 1000;
 }
 
-.object-header{
-  font-weight:1000;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:8px;
-  margin-bottom: 8px;
-}
-
-.object-actions{
-  display:flex;
-  flex-direction:column;
-  gap: 8px;
-}
-
-.object-actions button{
-  width: 100%;
-}
-
-/* ✅ Step 4: Skills as badge/stamp cards */
-.skills-grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 12px;
-}
-
-.skill-badge{
-  background: var(--paper-dark);
-  border-radius: 22px;
-  padding: 12px;
-  box-shadow: var(--shadow-soft);
-  text-align:center;
-}
-
-.skill-name{
-  font-weight:1000;
-}
-
-.skill-star{
-  font-size: 26px;
-  margin: 6px 0;
-}
-
-.skill-level{
+.popup-msg {
+  font-size: 13px;
   opacity: 0.8;
-  font-size: 12px;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
