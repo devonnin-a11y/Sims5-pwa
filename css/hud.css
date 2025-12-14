@@ -1,15 +1,86 @@
 #hud {
+  width: min(980px, 92vw);
+  background: rgba(0,0,0,0.55);
+  padding: 14px;
+  border-radius: 14px;
+}
+
+.hud-top, .hud-mid, .hud-bot {
   display: flex;
-  gap: 15px;
-  background: rgba(0,0,0,0.5);
-  padding: 10px 15px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-mid { margin-top: 10px; }
+.hud-bot { margin-top: 10px; }
+
+.sim-meta { display: flex; flex-direction: column; }
+.sim-name { font-weight: 800; font-size: 18px; }
+.sim-trait { opacity: 0.9; font-size: 13px; }
+
+.need span { margin-left: 6px; }
+
+.btn {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 0;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  cursor: pointer;
+}
+
+.btn.primary { background: #00ffcc; color: #062025; font-weight: 800; }
+.btn.danger { background: #ff5a5a; color: #200; font-weight: 800; }
+
+.hud-panels {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.card {
+  background: rgba(255,255,255,0.08);
   border-radius: 12px;
+  padding: 10px;
+  min-height: 90px;
 }
 
-.need span {
-  margin-left: 5px;
+.card-title {
+  font-weight: 800;
+  margin-bottom: 8px;
+  opacity: 0.95;
 }
 
-#emotion {
-  font-size: 24px;
+.panel {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 20, 25, 0.96);
+  color: white;
+  display: none;
+  flex-direction: column;
+  padding: 16px;
+  z-index: 50;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-title { font-weight: 900; font-size: 18px; }
+.panel-actions { margin-top: 14px; display: flex; gap: 10px; }
+
+.list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.08);
+  padding: 10px;
+  border-radius: 12px;
 }
