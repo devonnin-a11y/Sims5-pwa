@@ -1,40 +1,54 @@
 import { state, getActiveSim } from "./state.js";
 import { getRecentMemories } from "./memory.js";
 import { getFamilySummary } from "./relationships.js";
+import { calculateMood } from "./moodlets.js";
 
 export function renderUI() {
   const sim = getActiveSim();
 
+  // Needs
   document.querySelector("#hunger span").textContent = sim.needs.hunger;
   document.querySelector("#energy span").textContent = sim.needs.energy;
   document.querySelector("#social span").textContent = sim.needs.social;
-  document.querySelector("#emotion").textContent = sim.emotion;
 
+  // Time
   document.getElementById("time").textContent =
     `Day ${state.time.day} — ${String(state.time.hour).padStart(2, "0")}:00`;
 
-  // ✅ Upgrade: show name + trait
+  // Sim Meta (Upgrade)
   document.getElementById("sim-name").textContent = sim.name;
   document.getElementById("sim-trait").textContent = sim.traits?.[0]?.name ?? "Trait";
 
+  // Mood (from moodlets)
+  const mood = calculateMood(sim);
+  document.getElementById("emotion").textContent = mood;
+
   // Skills
   const skillsEl = document.getElementById("skills");
-  skillsEl.innerHTML = Object.entries(sim.skills)
+  skillsEl.innerHTML = Object.entries(sim.skills || {})
     .map(([name, s]) => `<div>${name}: Lv ${s.level} (${s.xp}/100)</div>`)
-    .join("");
+    .join("") || `<div style="opacity:.7">No skills yet</div>`;
 
   // Career
-  const c = sim.career;
+  const c = sim.career || { track: "Unemployed", level: 0, performance: 0 };
   document.getElementById("career").innerHTML =
     `<div>${c.track} — Lv ${c.level}</div>
      <div>Performance: ${c.performance}/100</div>`;
 
   // Memories
   const mem = getRecentMemories(sim, 5);
-  document.getElementById("memories").innerHTML =
-    mem.length
-      ? mem.map(m => `<div>• ${m.event} <span style="opacity:.7">(${m.emotion})</span></div>`).join("")
-      : `<div style="opacity:.7">No memories yet</div>`;
+  const memoriesHTML = mem.length
+    ? mem.map(m => `<div>• ${m.event} <span style="opacity:.7">(${m.emotion})</span></div>`).join("")
+    : `<div style="opacity:.7">No memories yet</div>`;
+
+  // Moodlets list (NEW)
+  const moodlets = (sim.moodlets || []);
+  const moodletsHTML = moodlets.length
+    ? `<div style="margin-top:8px; opacity:.95; font-weight:800;">Moodlets</div>` +
+      moodlets.slice(-5).reverse().map(m => `<div>• ${m.name}</div>`).join("")
+    : `<div style="margin-top:8px; opacity:.7">No moodlets</div>`;
+
+  document.getElementById("memories").innerHTML = memoriesHTML + moodletsHTML;
 
   // Family
   document.getElementById("family").innerHTML = getFamilySummary(sim);
@@ -54,8 +68,7 @@ export function renderHouseholdList() {
   const list = document.getElementById("household-list");
   list.innerHTML = "";
 
-  const sims = Object.values(state.household.sims);
-
+  const sims = Object.values(state.household.sims || {});
   sims.forEach(sim => {
     const active = sim.id === state.household.activeSimId;
     const div = document.createElement("div");
