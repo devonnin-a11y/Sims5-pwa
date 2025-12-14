@@ -1,10 +1,18 @@
-import { state } from "./state.js";
+import { getActiveSim } from "./state.js";
+import { addMemory } from "./memory.js";
 
 export function updateEmotion() {
-  const { hunger, energy, social } = state.sim.needs;
+  const sim = getActiveSim();
+  const { hunger, energy, social } = sim.needs;
 
-  if (hunger < 30) state.sim.emotion = "Hungry";
-  else if (energy < 30) state.sim.emotion = "Tired";
-  else if (social < 30) state.sim.emotion = "Lonely";
-  else state.sim.emotion = "Fine";
+  const prev = sim.emotion;
+
+  if (hunger < 30) sim.emotion = "Hungry";
+  else if (energy < 30) sim.emotion = "Tired";
+  else if (social < 30) sim.emotion = "Lonely";
+  else sim.emotion = "Fine";
+
+  if (sim.emotion !== prev) {
+    addMemory(sim, `Felt ${sim.emotion}`, sim.emotion, 0.55);
+  }
 }
