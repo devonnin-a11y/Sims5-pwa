@@ -1,92 +1,39 @@
 import { state, getActiveSim } from "./state.js";
-import { getRecentMemories } from "./memory.js";
-import { getFamilySummary } from "./relationships.js";
+import { cancelAction, moveAction } from "./queue.js";
 import { calculateMood } from "./moodlets.js";
 
 export function renderUI() {
   const sim = getActiveSim();
 
-  // Needs
+  document.getElementById("sim-name").textContent = sim.name;
+  document.getElementById("sim-trait").textContent = sim.traits?.[0]?.name ?? "";
+
+  document.getElementById("time").textContent =
+    `Day ${state.time.day} — ${String(state.time.hour).padStart(2,"0")}:00`;
+
   document.querySelector("#hunger span").textContent = sim.needs.hunger;
   document.querySelector("#energy span").textContent = sim.needs.energy;
   document.querySelector("#social span").textContent = sim.needs.social;
 
-  // Time
-  document.getElementById("time").textContent =
-    `Day ${state.time.day} — ${String(state.time.hour).padStart(2, "0")}:00`;
+  document.getElementById("emotion").textContent = calculateMood(sim);
 
-  // Sim Meta (Upgrade)
-  document.getElementById("sim-name").textContent = sim.name;
-  document.getElementById("sim-trait").textContent = sim.traits?.[0]?.name ?? "Trait";
-
-  // Mood (from moodlets)
-  const mood = calculateMood(sim);
-  document.getElementById("emotion").textContent = mood;
-
-  // Skills
-  const skillsEl = document.getElementById("skills");
-  skillsEl.innerHTML = Object.entries(sim.skills || {})
-    .map(([name, s]) => `<div>${name}: Lv ${s.level} (${s.xp}/100)</div>`)
-    .join("") || `<div style="opacity:.7">No skills yet</div>`;
-
-  // Career
-  const c = sim.career || { track: "Unemployed", level: 0, performance: 0 };
-  document.getElementById("career").innerHTML =
-    `<div>${c.track} — Lv ${c.level}</div>
-     <div>Performance: ${c.performance}/100</div>`;
-
-  // Memories
-  const mem = getRecentMemories(sim, 5);
-  const memoriesHTML = mem.length
-    ? mem.map(m => `<div>• ${m.event} <span style="opacity:.7">(${m.emotion})</span></div>`).join("")
-    : `<div style="opacity:.7">No memories yet</div>`;
-
-  // Moodlets list (NEW)
-  const moodlets = (sim.moodlets || []);
-  const moodletsHTML = moodlets.length
-    ? `<div style="margin-top:8px; opacity:.95; font-weight:800;">Moodlets</div>` +
-      moodlets.slice(-5).reverse().map(m => `<div>• ${m.name}</div>`).join("")
-    : `<div style="margin-top:8px; opacity:.7">No moodlets</div>`;
-
-  document.getElementById("memories").innerHTML = memoriesHTML + moodletsHTML;
-
-  // Family
-  document.getElementById("family").innerHTML = getFamilySummary(sim);
+  renderQueue(sim);
 }
 
-/* Household Panel */
-export function openHousehold() {
-  document.getElementById("household").style.display = "flex";
-  renderHouseholdList();
-}
+function renderQueue(sim) {
+  const el = document.getElementById("queue");
+  if (!el) return;
 
-export function closeHousehold() {
-  document.getElementById("household").style.display = "none";
-}
-
-export function renderHouseholdList() {
-  const list = document.getElementById("household-list");
-  list.innerHTML = "";
-
-  const sims = Object.values(state.household.sims || {});
-  sims.forEach(sim => {
-    const active = sim.id === state.household.activeSimId;
-    const div = document.createElement("div");
-    div.className = "list-item";
-    div.innerHTML = `
-      <div>
-        <div style="font-weight:800">${sim.name}</div>
-        <div style="opacity:.8; font-size:12px">${sim.age} • ${sim.traits?.[0]?.name ?? ""}</div>
+  el.innerHTML = sim.queue?.length
+    ? sim.queue.map((a,i)=>`
+      <div class="queue-item">
+        <span>${i===0 ? "▶️" : ""} ${a.label}</span>
+        <div>
+          <button onclick="moveAction('${a.id}',-1)">⬆</button>
+          <button onclick="moveAction('${a.id}',1)">⬇</button>
+          ${a.cancelable ? `<button onclick="cancelAction('${a.id}')">✖</button>` : ""}
+        </div>
       </div>
-      <button class="btn ${active ? "primary" : ""}" onclick="switchActiveSim('${sim.id}')">
-        ${active ? "Active" : "Switch"}
-      </button>
-    `;
-    list.appendChild(div);
-  });
-}
-
-export function switchActiveSim(simId) {
-  state.household.activeSimId = simId;
-  renderHouseholdList();
+    `).join("")
+    : `<div style="opacity:.6">No actions queued</div>`;
 }
