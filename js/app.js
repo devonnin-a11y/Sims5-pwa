@@ -3,6 +3,8 @@ import { startClock } from "./time.js";
 import { renderUI } from "./ui.js";
 import { openCAS } from "./cas.js";
 import { state } from "./state.js";
+import { loadMods } from "./mods.js";
+await loadMods();
 
 loadGame();
 
@@ -16,3 +18,6 @@ if (shouldForceCAS) {
 
 startClock();
 setInterval(renderUI, 250);
+
+
+
