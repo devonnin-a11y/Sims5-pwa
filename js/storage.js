@@ -11,8 +11,6 @@ export function loadGame() {
     const save = localStorage.getItem(KEY);
     if (!save) return;
     const parsed = JSON.parse(save);
-
-    // Merge into current state safely
     Object.assign(state, parsed);
   } catch (e) {
     console.warn("Save load failed:", e);
