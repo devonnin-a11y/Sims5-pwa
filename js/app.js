@@ -6,7 +6,7 @@ import { openCAS } from "./cas.js";
 
 loadGame();
 
-// If new sim, open CAS
+// Ensure we have an active sim
 const active = state.household?.sims?.[state.household.activeSimId];
 if (!active || active.name === "New Sim") {
   openCAS("create");
