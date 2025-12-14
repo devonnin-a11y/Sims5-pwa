@@ -29,7 +29,7 @@
   user-select: none;
 }
 
-.need span { margin-left: 6px; font-weight: 800; }
+.need span { margin-left: 6px; font-weight: 900; }
 
 .btn {
   padding: 10px 12px;
@@ -38,7 +38,7 @@
   background: rgba(255,255,255,0.12);
   color: white;
   cursor: pointer;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .btn.primary { background: #00ffcc; color: #062025; }
@@ -51,11 +51,8 @@
   gap: 10px;
 }
 
-/* Mobile: stack cards */
 @media (max-width: 700px) {
-  .hud-panels {
-    grid-template-columns: 1fr;
-  }
+  .hud-panels { grid-template-columns: 1fr; }
 }
 
 .card {
@@ -70,12 +67,9 @@
   font-weight: 900;
   margin-bottom: 10px;
   opacity: 0.95;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
-/* ✅ Queue styling */
+/* Queue UI */
 #queue {
   display: flex;
   flex-direction: column;
@@ -92,15 +86,44 @@
   padding: 10px;
 }
 
-.queue-item span {
-  font-weight: 800;
+.queue-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.queue-label {
+  font-weight: 900;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 70%;
 }
 
-.queue-item button {
+.queue-bar {
+  margin-top: 6px;
+  height: 8px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.queue-fill {
+  height: 100%;
+  background: rgba(0, 255, 204, 0.85);
+  width: 0%;
+}
+
+.queue-pct {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.queue-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.queue-buttons button {
   padding: 8px 10px;
   border-radius: 10px;
   border: 0;
